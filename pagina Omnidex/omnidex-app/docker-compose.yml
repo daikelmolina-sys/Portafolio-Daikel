@@ -1,0 +1,15 @@
+# Omnidex — Docker Compose
+# Puerto 9090 (los puertos 80, 8080, 3000 se asumen ocupados)
+#
+# IMPORTANTE: Si el puerto 9090 está ocupado, NO detengas otros contenedores.
+# Cambia el puerto del host en este archivo o ejecuta manualmente:
+#   docker run -p 8085:80 omnidex
+#   docker run -p 8888:80 omnidex
+
+services:
+  omnidex:
+    build: .
+    container_name: omnidex-web
+    ports:
+      - "9090:80"
+    restart: unless-stopped

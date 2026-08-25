@@ -1,0 +1,634 @@
+/* ==========================================================================
+   STATPRO — DASHBOARD DE ESTADÍSTICAS DE FÚTBOL
+   Hoja de Estilos Principal (CSS3 Moderno + Glassmorphism + Responsive Design)
+   ========================================================================== */
+
+/* ==========================================================================
+   1. VARIABLES CSS (CUSTOM PROPERTIES) / PALETA DE COLORES Y SISTEMA DE DISEÑO
+   ========================================================================== */
+:root,
+[data-theme="dark"] {
+    /* --- Paleta de Colores de Fondo y Superficies (Tema Oscuro por defecto) --- */
+    --bg-base: #0f172a;
+    /* Fondo base principal (Azul pizarra profundo) */
+    --bg-card: rgba(30, 41, 59, 0.7);
+    /* Fondo de tarjetas con transparencia para glassmorphism */
+    --bg-header: rgba(15, 23, 42, 0.75);
+    /* Fondo de barra superior fija */
+    --bg-surface: rgba(255, 255, 255, 0.04);
+    /* Fondo para sub-elementos (filas, items) */
+    --bg-surface-hover: rgba(255, 255, 255, 0.08);
+    /* Fondo interactivo al pasar el cursor */
+
+    /* --- Tipografía y Colores de Texto --- */
+    --text-main: #f8fafc;
+    /* Color de texto principal de alto contraste (Blanco/Gris hielo) */
+    --text-muted: #94a3b8;
+    /* Color de texto secundario y etiquetas atenuadas */
+
+    /* --- Colores de Acento y Marca --- */
+    --primary: #3b82f6;
+    /* Color primario (Azul brillante) */
+    --primary-hover: #2563eb;
+    /* Color primario en estado hover */
+    --secondary: #10b981;
+    /* Color secundario / Éxito (Verde esmeralda para líderes y puntos) */
+    --accent: #f59e0b;
+    /* Color de acento / Advertencia (Ámbar para partidos programados) */
+    --danger: #ef4444;
+    /* Color de alerta / Peligro (Rojo para descensos y partidos en vivo) */
+
+    /* --- Bordes, Sombras y Efectos de Cristal (Glassmorphism) --- */
+    --border-color: rgba(255, 255, 255, 0.1);
+    /* Borde sutil traslúcido */
+    --border-color-focus: rgba(59, 130, 246, 0.6);
+    /* Borde resaltado para foco/hover */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+    --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+
+    /* --- Radio de Bordes (Border Radius) --- */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+
+    /* --- Transiciones Universales --- */
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Soporte opcional para modo claro (Light Mode) */
+[data-theme="light"] {
+    --bg-base: #f8fafc;
+    --bg-card: rgba(255, 255, 255, 0.9);
+    --bg-header: rgba(255, 255, 255, 0.85);
+    --bg-surface: rgba(0, 0, 0, 0.03);
+    --bg-surface-hover: rgba(0, 0, 0, 0.06);
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --border-color: rgba(0, 0, 0, 0.08);
+    --border-color-focus: rgba(37, 99, 235, 0.5);
+    --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+}
+
+
+/* ==========================================================================
+   2. REINICIO GENERAL (CSS RESET) Y ESTILOS BASE
+   ========================================================================== */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    /* Garantiza que padding y bordes no alteren el ancho total */
+}
+
+body {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    background-color: var(--bg-base);
+    color: var(--text-main);
+    min-height: 100vh;
+    /* Fondo dinámico con gradientes radiales fijos para efecto de profundidad visual */
+    background-image:
+        radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(16, 185, 129, 0.12) 0px, transparent 50%),
+        radial-gradient(at 50% 100%, rgba(245, 158, 11, 0.1) 0px, transparent 50%);
+    background-attachment: fixed;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+
+/* ==========================================================================
+   3. TIPOGRAFÍA Y TEXTOS AUXILIARES
+   ========================================================================== */
+h1,
+h2,
+h3 {
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    color: var(--text-main);
+}
+
+h2 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Subtítulos descriptivos bajo los encabezados */
+.subtitle {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    margin-bottom: 1.5rem;
+    margin-top: -0.5rem;
+}
+
+/* Clase utilitaria para textos atenuados o mensajes de estado */
+.text-muted {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    text-align: center;
+    padding: 1rem 0;
+}
+
+
+/* ==========================================================================
+   4. ESTRUCTURA Y CONTENEDOR PRINCIPAL DEL LAYOUT
+   ========================================================================== */
+.app-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+
+/* ==========================================================================
+   5. ENCABEZADO SUPERIOR CON EFECTO VIDRIO (GLASSMORPHISM HEADER)
+   ========================================================================== */
+.glass-header {
+    background: var(--bg-header);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    box-shadow: var(--shadow-glass);
+    position: sticky;
+    top: 1rem;
+    z-index: 100;
+}
+
+/* Logotipo de la aplicación con icono y gradiente */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--primary);
+}
+
+.logo svg {
+    flex-shrink: 0;
+}
+
+.logo h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    /* Gradiente moderno en el texto del logo */
+    background: linear-gradient(135deg, #3b82f6, #10b981);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+
+
+/* ==========================================================================
+   6. CONTROLES Y SELECTORES DE FILTRO (DROPDOWNS)
+   ========================================================================== */
+.controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+/* Contenedor relativo para posicionar la flecha personalizada del select */
+.select-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+/* Estilo estilizado del elemento <select> */
+select {
+    width: 100%;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 0.75rem 1rem;
+    padding-right: 2.5rem;
+    border-radius: var(--radius-md);
+    font-size: 0.95rem;
+    font-family: inherit;
+    cursor: pointer;
+    transition: var(--transition);
+    outline: none;
+}
+
+/* Estados hover y focus de los selectores */
+select:hover,
+select:focus {
+    background-color: var(--bg-surface-hover);
+    border-color: var(--border-color-focus);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+/* Opciones desplegables dentro del select */
+select option {
+    background-color: var(--bg-base);
+    color: var(--text-main);
+    padding: 0.5rem;
+}
+
+/* Flecha desplegable personalizada con pseudo-elemento */
+.select-wrapper::after {
+    content: "▼";
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+
+/* ==========================================================================
+   7. GRILLA PRINCIPAL DEL DASHBOARD
+   ========================================================================== */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+
+
+/* ==========================================================================
+   8. TARJETAS DE CONTENIDO (CARDS CON EFECTO GLASSMORPHISM)
+   ========================================================================== */
+.card {
+    background: var(--bg-card);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-md);
+    position: relative;
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.card:hover {
+    border-color: var(--border-color-focus);
+    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
+}
+
+
+/* ==========================================================================
+   9. TABLA DE POSICIONES (STANDINGS TABLE)
+   ========================================================================== */
+/* Contenedor con scroll horizontal para pantallas pequeñas */
+.table-responsive {
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary) transparent;
+}
+
+.table-responsive::-webkit-scrollbar {
+    height: 6px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background-color: var(--primary);
+    border-radius: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px;
+}
+
+th,
+td {
+    padding: 0.875rem 1rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Encabezados de la tabla */
+th {
+    color: var(--text-muted);
+    font-weight: 500;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background-color: var(--bg-surface);
+}
+
+td {
+    font-size: 0.95rem;
+}
+
+/* Efecto hover sobre cada fila de la tabla */
+tr {
+    transition: var(--transition);
+}
+
+tr:hover {
+    background-color: var(--bg-surface-hover);
+}
+
+/* Alineación a la izquierda para el nombre del equipo */
+td:nth-child(2) {
+    text-align: left;
+    font-weight: 500;
+}
+
+/* Clases de colores según la posición en la tabla */
+.pos-1 {
+    color: var(--secondary);
+    font-weight: 700;
+}
+
+.pos-top {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.pos-bottom {
+    color: var(--danger);
+    font-weight: 600;
+}
+
+
+/* ==========================================================================
+   10. GRILLA Y TARJETAS DE PARTIDOS (MATCHES GRID)
+   ========================================================================== */
+.matches-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+/* Tarjeta individual de cada partido */
+.match-item {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 1rem;
+    transition: var(--transition);
+}
+
+.match-item:hover {
+    transform: translateY(-2px);
+    background: var(--bg-surface-hover);
+    border-color: var(--border-color-focus);
+}
+
+/* Columnas de los equipos */
+.team {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.team-home {
+    text-align: right;
+}
+
+.team-away {
+    text-align: left;
+}
+
+.team-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+/* Contenedor del marcador central y estado */
+.score-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.score {
+    background: var(--bg-base);
+    border: 1px solid var(--border-color);
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+    color: var(--text-main);
+}
+
+/* Insignias de estado del partido */
+.match-status {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+/* Estado: Partido Finalizado */
+.status-finalizado {
+    color: var(--text-muted);
+    background: var(--bg-surface-hover);
+}
+
+/* Estado: Partido En Vivo (con animación de pulso) */
+.status-en_vivo {
+    color: var(--danger);
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    animation: pulse 2s infinite;
+}
+
+/* Estado: Partido Programado */
+.status-programado {
+    color: var(--accent);
+    background: rgba(245, 158, 11, 0.15);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+
+/* ==========================================================================
+   11. LISTA DE PROYECCIONES DE PUNTOS (PROJECTION LIST)
+   ========================================================================== */
+.projection-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+/* Elemento de fila para cada equipo proyectado */
+.projection-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    border-left: 4px solid transparent;
+    transition: var(--transition);
+}
+
+.projection-item:hover {
+    background: var(--bg-surface-hover);
+    border-left-color: var(--primary);
+    transform: translateX(4px);
+}
+
+.proj-team {
+    font-weight: 500;
+}
+
+/* Puntos proyectados con insignia resaltada */
+.proj-points {
+    font-weight: 700;
+    color: var(--secondary);
+    font-size: 1.05rem;
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+}
+
+
+/* ==========================================================================
+   12. INDICADOR DE CARGA (LOADER / SPINNER) Y ESTADOS DE CARGA
+   ========================================================================== */
+.loader {
+    display: none;
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    border-top-color: var(--primary);
+    animation: spin 1s ease-in-out infinite;
+    margin: 2rem auto;
+}
+
+/* Activación del spinner cuando el contenedor padre tiene la clase .loading */
+.loading .loader {
+    display: block;
+}
+
+/* Atenuación del contenido mientras se cargan nuevos datos */
+.loading table,
+.loading .matches-grid,
+.loading .projection-list {
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+
+/* ==========================================================================
+   13. ANIMACIONES KEYFRAMES
+   ========================================================================== */
+/* Animación de rotación continua para el spinner */
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Animación de pulso para partidos en vivo */
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.6;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+/* Animación de entrada suave hacia arriba (fade-in) */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Clase de utilidad para aplicar la animación fadeIn a nuevos elementos */
+.fade-in {
+    animation: fadeIn 0.4s ease-out forwards;
+}
+
+
+/* ==========================================================================
+   14. DISEÑO RESPONSIVO (MEDIA QUERIES)
+   ========================================================================== */
+/* Pantallas medianas / Tablets (>= 768px) */
+@media (min-width: 768px) {
+    .glass-header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .controls {
+        flex-direction: row;
+        width: auto;
+        min-width: 400px;
+    }
+
+    .matches-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Pantallas grandes / Escritorio (>= 1024px) */
+@media (min-width: 1024px) {
+    .dashboard-grid {
+        grid-template-columns: 2fr 1fr;
+        grid-template-areas:
+            "standings projection"
+            "matches projection";
+    }
+
+    .standings-card {
+        grid-area: standings;
+    }
+
+    .matches-card {
+        grid-area: matches;
+    }
+
+    .projection-card {
+        grid-area: projection;
+    }
+
+    .matches-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Pantallas extra grandes (>= 1280px) */
+@media (min-width: 1280px) {
+    .matches-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

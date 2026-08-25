@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <!-- Metadatos básicos y optimización para dispositivos móviles -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Omnidex — Enciclopedia Interactiva de Pokémon</title>
+  <meta name="description" content="Omnidex es una enciclopedia interactiva y futurista de Pokémon. Explora estadísticas, habilidades, tipos y lore con una interfaz holográfica inmersiva." />
+  <meta name="theme-color" content="#0a0a1a" />
+
+  <!-- Metadatos para compartir en redes sociales (Open Graph) -->
+  <meta property="og:title" content="Omnidex — Enciclopedia Interactiva" />
+  <meta property="og:description" content="Explora el universo Pokémon con una interfaz futurista e inmersiva." />
+  <meta property="og:type" content="website" />
+
+  <!-- Favicon vectorial integrado en SVG -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔮</text></svg>" />
+
+  <!-- Hoja de estilos visuales principales (Glassmorphism, gradientes, animaciones) -->
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <!-- Barra superior de progreso y carga para peticiones AJAX -->
+  <div class="loading-bar" id="loadingBar"></div>
+
+  <!-- Capas de fondo animadas (estrellas y orbes flotantes con efecto glow) -->
+  <div class="bg-stars"></div>
+  <div class="bg-orb bg-orb--1"></div>
+  <div class="bg-orb bg-orb--2"></div>
+  <div class="bg-orb bg-orb--3"></div>
+
+  <!-- Contenedor principal de la aplicación -->
+  <div class="app-container">
+
+    <!-- ================================================================= -->
+    <!-- 1. ENCABEZADO / NAVBAR (Logo, Buscador rápido y Selector de tema) -->
+    <!-- ================================================================= -->
+    <header class="header" id="header">
+      <!-- Logo interactivo con redirección a vista inicial -->
+      <a href="#" class="header__logo" id="logoHome">
+        <div class="header__logo-icon">🔮</div>
+        <span class="header__logo-text">OMNIDEX</span>
+      </a>
+
+      <!-- Buscador en el header (visible al hacer scroll) -->
+      <div class="search-wrapper">
+        <input
+          type="search"
+          class="search-bar"
+          id="headerSearch"
+          placeholder="Buscar Pokémon..."
+          autocomplete="off"
+        />
+        <span class="search-icon">🔍</span>
+      </div>
+
+      <!-- Menú de navegación y botón para alternar tema Claro / Oscuro -->
+      <nav class="header__nav" id="headerNav">
+        <button class="nav-btn nav-btn--active" data-section="explore" id="navExplore">Explorar</button>
+        <button class="nav-btn" data-section="types" id="navTypes">Tipos</button>
+        <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema claro/oscuro" title="Claro / Oscuro">
+          <span class="theme-toggle__icon theme-toggle__icon--sun">☀️</span>
+          <span class="theme-toggle__icon theme-toggle__icon--moon">🌙</span>
+        </button>
+      </nav>
+    </header>
+
+    <!-- ================================================================= -->
+    <!-- 2. SECCIÓN HERO (Título principal y Buscador centralizado)         -->
+    <!-- ================================================================= -->
+    <section class="hero" id="heroSection">
+      <h1 class="hero__title">OMNIDEX</h1>
+      <p class="hero__subtitle">
+        Tu enciclopedia holográfica del universo Pokémon. Busca, explora y descubre estadísticas, habilidades y lore de cada criatura.
+      </p>
+      <div class="hero__search">
+        <input
+          type="search"
+          class="hero__search-input"
+          id="heroSearchInput"
+          placeholder="Escribe un nombre o número... (ej. Pikachu, 25)"
+          autocomplete="off"
+          autofocus
+        />
+        <span class="hero__search-icon">⌕</span>
+      </div>
+      <p class="hero__search-hint">
+        Presiona <kbd>Enter</kbd> para buscar · También puedes usar el ID numérico
+      </p>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- 3. BARRA DE FILTROS POR TIPO ELEMENTAL (Fuego, Agua, Planta, etc) -->
+    <!-- ================================================================= -->
+    <div class="type-filters" id="typeFilters">
+      <!-- Los botones de filtro se generan dinámicamente desde js/ui.js -->
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- 4. CONTENIDO PRINCIPAL: Grilla de Tarjetas y Estados de Carga/Error-->
+    <!-- ================================================================= -->
+    <main class="main-content" id="mainContent">
+
+      <!-- Grilla donde se inyectan las tarjetas 3D interactivas de Pokémon -->
+      <div class="results-grid" id="resultsGrid">
+        <!-- Tarjetas inyectadas por JavaScript -->
+      </div>
+
+      <!-- Mensaje cuando la búsqueda no arrojó coincidencias -->
+      <div class="empty-state" id="emptyState" style="display:none;">
+        <div class="empty-state__icon">🌌</div>
+        <p class="empty-state__text">No se encontraron resultados. Intenta con otro nombre o ID.</p>
+      </div>
+
+      <!-- Panel de error en caso de fallo de red o caída de la API externa -->
+      <div class="error-panel" id="errorPanel">
+        <div class="error-panel__icon">📡</div>
+        <h2 class="error-panel__title">Transmisión Interrumpida</h2>
+        <p class="error-panel__message">
+          La señal con la base de datos se ha perdido. Verifica tu conexión a la red y vuelve a intentarlo.
+        </p>
+        <div class="error-panel__code" id="errorCode">ERR::NETWORK_FAILURE</div>
+        <br /><br />
+        <button class="error-panel__retry" id="retryBtn">Reintentar Conexión</button>
+      </div>
+
+    </main>
+
+    <!-- ================================================================= -->
+    <!-- 5. MODAL / OVERLAY DE DETALLE (Holograma con stats y habilidades)  -->
+    <!-- ================================================================= -->
+    <div class="detail-overlay" id="detailOverlay">
+      <div class="detail-panel" id="detailPanel">
+        <!-- Botón para cerrar la ventana modal -->
+        <button class="detail-panel__close" id="detailClose" aria-label="Cerrar">✕</button>
+
+        <!-- Cabecera del Pokémon: Imagen frontal grande, Nombre, Tipos y Medidas -->
+        <div class="detail-panel__header">
+          <img class="detail-panel__sprite" id="detailSprite" src="" alt="" />
+          <div class="detail-panel__info">
+            <h2 id="detailName"></h2>
+            <p class="detail-id" id="detailId"></p>
+            <div class="detail-panel__types" id="detailTypes"></div>
+            <div class="detail-panel__meta">
+              <span id="detailHeight">📏 —</span>
+              <span id="detailWeight">⚖️ —</span>
+              <span id="detailExp">✨ —</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Barras de Estadísticas Base (HP, Ataque, Defensa, Velocidad, etc) -->
+        <div class="detail-stats" id="detailStats">
+          <h3 class="detail-stats__title">Estadísticas Base</h3>
+          <!-- Filas de estadísticas inyectadas por JavaScript -->
+        </div>
+
+        <!-- Lista de Habilidades especiales -->
+        <div class="detail-abilities" id="detailAbilities">
+          <h3 class="detail-abilities__title">Habilidades</h3>
+          <!-- Chips de habilidades inyectados por JavaScript -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- 6. PIE DE PÁGINA                                                  -->
+    <!-- ================================================================= -->
+    <footer class="footer">
+      <p>
+        Omnidex © 2026 · Datos de <a href="https://pokeapi.co/" target="_blank" rel="noopener">PokéAPI</a> ·
+        Diseñado con ✨ y glassmorphism
+      </p>
+    </footer>
+
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- 7. MÓDULOS DE JAVASCRIPT (Carga en orden de dependencia)          -->
+  <!-- ================================================================= -->
+  <script src="js/api.js"></script>     <!-- Comunicación con la PokéAPI y Caché -->
+  <script src="js/theme.js"></script>   <!-- Control de Tema Claro / Oscuro -->
+  <script src="js/tilt.js"></script>    <!-- Efecto 3D de inclinación en tarjetas -->
+  <script src="js/ui.js"></script>      <!-- Manipulación del DOM y renderizado -->
+  <script src="js/app.js"></script>     <!-- Controlador orquestador principal -->
+
+</body>
+</html>
+

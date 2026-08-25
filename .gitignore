@@ -1,0 +1,58 @@
+# ==========================================
+# Dependencias y paquetes
+# ==========================================
+**/node_modules/
+**/vendor/
+/node_modules/
+/vendor/
+
+# ==========================================
+# Variables de entorno y credenciales
+# ==========================================
+**/.env
+**/.env.backup
+**/.env.production
+**/.env.*.local
+.env
+.env.backup
+.env.production
+
+# ==========================================
+# Compilación y builds
+# ==========================================
+**/public/build/
+**/public/hot
+**/public/storage
+**/storage/*.key
+**/storage/pail
+
+# ==========================================
+# Logs y cachés de testing
+# ==========================================
+**/*.log
+**/.phpunit.result.cache
+**/.phpunit.cache/
+**/.phpactor.json
+storage/logs/*.log
+
+# ==========================================
+# IDEs y Editores de código
+# ==========================================
+.idea/
+.vscode/
+.fleet/
+.nova/
+.zed/
+.cursor/
+.codex/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ==========================================
+# Archivos de sistema operativo
+# ==========================================
+.DS_Store
+Thumbs.db

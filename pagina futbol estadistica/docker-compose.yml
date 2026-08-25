@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: laravel-app
+    container_name: football-app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    networks:
+      - football-network
+
+  db:
+    image: mysql:8.0
+    container_name: football-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: football_stats
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_PASSWORD: root
+      MYSQL_USER: football_user
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - football-network
+    expose:
+      - "3306"
+
+networks:
+  football-network:
+    driver: bridge
+
+volumes:
+  dbdata:
