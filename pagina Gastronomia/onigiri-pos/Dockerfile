@@ -9,7 +9,7 @@ COPY package*.json ./
 RUN npm ci || npm install
 
 COPY . .
-RUN npm run build || echo "No build script required or assets pre-built"
+RUN npm run build
 
 # =============================================================================
 # Stage 2: PHP 8.2-FPM + Nginx (Producción para Render)

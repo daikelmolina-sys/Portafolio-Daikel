@@ -7,6 +7,8 @@ use App\Listeners\InvalidateCatalogCacheListener;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
+use Illuminate\Support\Facades\URL;
+
 class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
@@ -19,6 +21,10 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        if (app()->environment('production') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')) {
+            URL::forceScheme('https');
+        }
+
         // Registrar Events → Listeners
         Event::listen(OrderConfirmedEvent::class, InvalidateCatalogCacheListener::class);
     }
