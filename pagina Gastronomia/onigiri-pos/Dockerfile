@@ -73,9 +73,9 @@ RUN composer install --no-interaction --prefer-dist --optimize-autoloader --no-d
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Copiar y dar permisos al script de entrada
+# Copiar y dar permisos al script de entrada (eliminando posibles retornos de carro CRLF)
 COPY docker/render-entrypoint.sh /usr/local/bin/render-entrypoint.sh
-RUN chmod +x /usr/local/bin/render-entrypoint.sh
+RUN sed -i 's/\r$//' /usr/local/bin/render-entrypoint.sh && chmod +x /usr/local/bin/render-entrypoint.sh
 
 EXPOSE 8080
 
