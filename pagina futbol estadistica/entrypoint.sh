@@ -29,6 +29,14 @@ if [ -z "$APP_KEY" ]; then
     php artisan key:generate --force || true
 fi
 
+# Crear archivo de base de datos SQLite si está configurado
+if [ "$DB_CONNECTION" = "sqlite" ] || [ -z "$DB_HOST" ]; then
+    mkdir -p /var/www/html/database
+    touch /var/www/html/database/database.sqlite
+    chown -R www-data:www-data /var/www/html/database
+    chmod -R 775 /var/www/html/database
+fi
+
 # Intentar migraciones de base de datos
 echo "📦 Ejecutando migraciones de base de datos..."
 php artisan migrate --force || echo "⚠️ Advertencia: No se pudieron ejecutar las migraciones inmediatamente. Continuando arranque..."

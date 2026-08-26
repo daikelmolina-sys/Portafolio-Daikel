@@ -1,0 +1,67 @@
+# =============================================================================
+# Render Blueprint (Infrastructure as Code)
+# Despliega los 3 servicios web simultáneamente con un solo clic.
+# =============================================================================
+services:
+
+  # ---------------------------------------------------------------------------
+  # 1. 🔮 Omnidex (Enciclopedia Pokémon)
+  # ---------------------------------------------------------------------------
+  - type: web
+    name: omnidex-app
+    runtime: docker
+    rootDir: "pagina Omnidex/omnidex-app"
+    dockerfilePath: "./Dockerfile"
+    dockerContext: "."
+    plan: free
+    region: oregon
+
+  # ---------------------------------------------------------------------------
+  # 2. ⚽ Fútbol Estadística (Laravel 12 + Nginx + PHP 8.4)
+  # ---------------------------------------------------------------------------
+  - type: web
+    name: futbol-estadistica
+    runtime: docker
+    rootDir: "pagina futbol estadistica"
+    dockerfilePath: "./Dockerfile"
+    dockerContext: "."
+    plan: free
+    region: oregon
+    envVars:
+      - key: APP_NAME
+        value: FutbolEstadistica
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_KEY
+        generateValue: true
+      - key: DB_CONNECTION
+        value: sqlite
+      - key: DB_DATABASE
+        value: /var/www/html/database/database.sqlite
+
+  # ---------------------------------------------------------------------------
+  # 3. 🍱 Gastronomía — Onigiri POS (Laravel 12 + Nginx + PHP 8.2 + Vite)
+  # ---------------------------------------------------------------------------
+  - type: web
+    name: onigiri-pos
+    runtime: docker
+    rootDir: "pagina Gastronomia/onigiri-pos"
+    dockerfilePath: "./Dockerfile"
+    dockerContext: "."
+    plan: free
+    region: oregon
+    envVars:
+      - key: APP_NAME
+        value: OnigiriPOS
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_KEY
+        generateValue: true
+      - key: DB_CONNECTION
+        value: sqlite
+      - key: DB_DATABASE
+        value: /var/www/html/database/database.sqlite
