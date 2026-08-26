@@ -1,19 +1,19 @@
 #!/bin/sh
 set -e
 
-# Configurar puerto dinámico (Render inyecta $PORT, en local usa 8000)
-PORT=${PORT:-8000}
+# Configurar puerto dinámico (Render inyecta $PORT, por defecto 8080)
+PORT=${PORT:-8080}
 export PORT
 
-echo "🚀 Iniciando Fútbol Estadística en el puerto ${PORT}..."
+echo "🍱 Iniciando Onigiri POS en el puerto ${PORT}..."
 
 # Generar configuración de Nginx con el puerto correspondiente
 mkdir -p /etc/nginx/conf.d /etc/nginx/sites-available /etc/nginx/sites-enabled
-envsubst '${PORT}' < /etc/nginx/templates/default.conf.template > /etc/nginx/sites-available/default
+envsubst '${PORT}' < /etc/nginx/templates/render-nginx.conf.template > /etc/nginx/sites-available/default
 cp /etc/nginx/sites-available/default /etc/nginx/conf.d/default.conf
 ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default 2>/dev/null || true
 
-# Asegurar directorios de logs y cache con permisos adecuados
+# Asegurar permisos en storage y bootstrap/cache
 mkdir -p /var/www/html/storage/framework/cache/data
 mkdir -p /var/www/html/storage/framework/sessions
 mkdir -p /var/www/html/storage/framework/views
@@ -21,7 +21,7 @@ mkdir -p /var/www/html/storage/logs
 chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Generar APP_KEY si no está establecida
+# Generar APP_KEY si no existe
 if [ -z "$APP_KEY" ]; then
     if [ ! -f ".env" ]; then
         cp .env.example .env 2>/dev/null || true
@@ -33,7 +33,7 @@ fi
 echo "📦 Ejecutando migraciones de base de datos..."
 php artisan migrate --force || echo "⚠️ Advertencia: No se pudieron ejecutar las migraciones inmediatamente. Continuando arranque..."
 
-# Optimizar cache para producción si está en entorno de producción
+# Optimizar Laravel para producción
 if [ "$APP_ENV" = "production" ]; then
     echo "⚡ Optimizando caché de Laravel para producción..."
     php artisan config:cache || true
