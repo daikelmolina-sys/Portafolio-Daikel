@@ -1,0 +1,16 @@
+services:
+  assistant:
+    build: .
+    container_name: va-python
+    env_file:
+      - .env
+    environment:
+      - PULSE_SERVER=unix:${XDG_RUNTIME_DIR:-/run/user/1000}/pulse/native
+    volumes:
+      - ${XDG_RUNTIME_DIR:-/run/user/1000}/pulse:${XDG_RUNTIME_DIR:-/run/user/1000}/pulse
+      - ~/.config/pulse/cookie:/root/.config/pulse/cookie
+    devices:
+      - /dev/snd:/dev/snd
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
